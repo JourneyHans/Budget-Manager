@@ -84,12 +84,12 @@ const CostPieChart: React.FC<CostPieChartProps> = ({ data, totalAmount }) => {
             stroke="rgba(255, 255, 255, 0.2)"
             strokeWidth={2}
           >
-            {data.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
+                         {data.map((entry, index) => (
+               <Cell 
+                 key={`cell-${index}`} 
+                 fill={entry.color}
+               />
+             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend content={<CustomLegend />} />
