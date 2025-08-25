@@ -51,7 +51,15 @@ const resources: TranslationResources = {
       costRange: '成本范围',
       noCostData: '暂无成本数据',
       addCostsToViewCharts: '请添加成本项目以查看图表',
-      months: '个月'
+      months: '个月',
+      days: '天',
+      years: '年',
+      timeUnit: '时间单位',
+      daysLeft: '您还能坚持 {{days}} 天',
+      yearsLeft: '您还能坚持 {{years}} 年',
+      switchToDays: '切换到天数',
+      switchToMonths: '切换到月数',
+      switchToYears: '切换到年数'
     }
   },
   en: {
@@ -94,7 +102,15 @@ const resources: TranslationResources = {
       costRange: 'Cost Range',
       noCostData: 'No cost data available',
       addCostsToViewCharts: 'Add cost items to view charts',
-      months: 'months'
+      months: 'months',
+      days: 'days',
+      years: 'years',
+      timeUnit: 'Time Unit',
+      daysLeft: 'You can survive for {{days}} days',
+      yearsLeft: 'You can survive for {{years}} years',
+      switchToDays: 'Switch to Days',
+      switchToMonths: 'Switch to Months',
+      switchToYears: 'Switch to Years'
     }
   }
 };

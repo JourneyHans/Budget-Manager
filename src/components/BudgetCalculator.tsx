@@ -16,6 +16,13 @@ interface Errors {
   [key: string]: string;
 }
 
+// 定义时间单位的枚举
+enum TimeUnit {
+  DAYS = 'days',
+  MONTHS = 'months',
+  YEARS = 'years'
+}
+
 const BudgetCalculator: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [remainingAmount, setRemainingAmount] = useState<string>('');
@@ -23,6 +30,7 @@ const BudgetCalculator: React.FC = () => {
     { id: 1, name: '', amount: '', description: '' }
   ]);
   const [monthsLeft, setMonthsLeft] = useState<number | null>(null);
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>(TimeUnit.MONTHS);
   const [errors, setErrors] = useState<Errors>({});
 
   // 实时计算
@@ -102,6 +110,15 @@ const BudgetCalculator: React.FC = () => {
     } else {
       const months = remaining / totalMonthly;
       setMonthsLeft(months);
+      
+      // 自动选择最合适的时间单位
+      if (months < 1) {
+        setTimeUnit(TimeUnit.DAYS);
+      } else if (months < 36) {
+        setTimeUnit(TimeUnit.MONTHS);
+      } else {
+        setTimeUnit(TimeUnit.YEARS);
+      }
     }
   };
 
@@ -109,6 +126,7 @@ const BudgetCalculator: React.FC = () => {
     setRemainingAmount('');
     setMonthlyCosts([{ id: 1, name: '', amount: '', description: '' }]);
     setMonthsLeft(null);
+    setTimeUnit(TimeUnit.MONTHS);
     setErrors({});
   };
 
@@ -127,6 +145,32 @@ const BudgetCalculator: React.FC = () => {
       .reduce((sum, cost) => sum + parseFloat(cost.amount), 0);
   };
 
+  // 根据时间单位计算剩余时间
+  const getTimeLeft = (): number => {
+    if (monthsLeft === null) return 0;
+    
+    switch (timeUnit) {
+      case TimeUnit.DAYS:
+        return monthsLeft * 30.44; // 平均每月30.44天
+      case TimeUnit.YEARS:
+        return monthsLeft / 12;
+      default:
+        return monthsLeft;
+    }
+  };
+
+  // 获取时间单位的显示文本
+  const getTimeUnitText = (): string => {
+    switch (timeUnit) {
+      case TimeUnit.DAYS:
+        return t('days');
+      case TimeUnit.YEARS:
+        return t('years');
+      default:
+        return t('months');
+    }
+  };
+
   const getResultText = (): string => {
     if (monthsLeft === null) return '';
     
@@ -134,13 +178,22 @@ const BudgetCalculator: React.FC = () => {
       return t('insufficientFunds');
     }
     
-    const wholeMonths = Math.floor(monthsLeft);
-    const decimalPart = monthsLeft - wholeMonths;
+    const timeLeft = getTimeLeft();
     
-    if (decimalPart === 0) {
-      return t('monthsLeft', { months: wholeMonths });
-    } else {
-      return t('monthsLeftDecimal', { months: monthsLeft.toFixed(1) });
+    switch (timeUnit) {
+      case TimeUnit.DAYS:
+        return t('daysLeft', { days: Math.round(timeLeft) });
+      case TimeUnit.YEARS:
+        return t('yearsLeft', { years: timeLeft.toFixed(1) });
+      default:
+        const wholeMonths = Math.floor(timeLeft);
+        const decimalPart = timeLeft - wholeMonths;
+        
+        if (decimalPart === 0) {
+          return t('monthsLeft', { months: wholeMonths });
+        } else {
+          return t('monthsLeftDecimal', { months: timeLeft.toFixed(1) });
+        }
     }
   };
 
@@ -256,6 +309,34 @@ const BudgetCalculator: React.FC = () => {
         {monthsLeft !== null && (
           <div className="result-section">
             <h2>{t('result')}</h2>
+            
+            {/* 时间单位切换 */}
+            <div className="time-unit-selector">
+              <span className="time-unit-label">{t('timeUnit')}:</span>
+              <div className="time-unit-buttons">
+                <button
+                  className={`time-unit-btn ${timeUnit === TimeUnit.DAYS ? 'active' : ''}`}
+                  onClick={() => setTimeUnit(TimeUnit.DAYS)}
+                  disabled={monthsLeft < 1}
+                >
+                  {t('days')}
+                </button>
+                <button
+                  className={`time-unit-btn ${timeUnit === TimeUnit.MONTHS ? 'active' : ''}`}
+                  onClick={() => setTimeUnit(TimeUnit.MONTHS)}
+                >
+                  {t('months')}
+                </button>
+                <button
+                  className={`time-unit-btn ${timeUnit === TimeUnit.YEARS ? 'active' : ''}`}
+                  onClick={() => setTimeUnit(TimeUnit.YEARS)}
+                  disabled={monthsLeft < 12}
+                >
+                  {t('years')}
+                </button>
+              </div>
+            </div>
+            
             <div className="result-display">
               <p className="result-text">{getResultText()}</p>
             </div>
@@ -274,7 +355,7 @@ const BudgetCalculator: React.FC = () => {
                                         <div className="summary-item">
                           <span className="label">{t('survivalTime')}</span>
                           <span className="value">
-                            {monthsLeft === 0 ? '0' : monthsLeft.toFixed(1)} {t('months')}
+                            {monthsLeft === 0 ? '0' : getTimeLeft().toFixed(1)} {getTimeUnitText()}
                           </span>
                         </div>
               </div>
