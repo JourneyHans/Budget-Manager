@@ -3,13 +3,12 @@ import './i18n';
 import BudgetCalculator from './components/BudgetCalculator';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <BudgetCalculator />
     </div>
   );
-}
+};
 
 export default App;
-

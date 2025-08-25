@@ -1,7 +1,16 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-const resources = {
+// 定义翻译资源的接口
+interface TranslationResources {
+  [key: string]: {
+    translation: {
+      [key: string]: string;
+    };
+  };
+}
+
+const resources: TranslationResources = {
   zh: {
     translation: {
       appTitle: '预算管理器',
@@ -72,4 +81,3 @@ i18n
   });
 
 export default i18n;
-

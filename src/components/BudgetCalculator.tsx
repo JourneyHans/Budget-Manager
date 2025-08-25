@@ -2,14 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './BudgetCalculator.css';
 
-const BudgetCalculator = () => {
+// 定义成本项目的接口
+interface CostItem {
+  id: number;
+  name: string;
+  amount: string;
+  description: string;
+}
+
+// 定义错误对象的接口
+interface Errors {
+  [key: string]: string;
+}
+
+const BudgetCalculator: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [remainingAmount, setRemainingAmount] = useState('');
-  const [monthlyCosts, setMonthlyCosts] = useState([
+  const [remainingAmount, setRemainingAmount] = useState<string>('');
+  const [monthlyCosts, setMonthlyCosts] = useState<CostItem[]>([
     { id: 1, name: '', amount: '', description: '' }
   ]);
-  const [monthsLeft, setMonthsLeft] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [monthsLeft, setMonthsLeft] = useState<number | null>(null);
+  const [errors, setErrors] = useState<Errors>({});
 
   // 实时计算
   useEffect(() => {
@@ -20,7 +33,7 @@ const BudgetCalculator = () => {
     }
   }, [remainingAmount, monthlyCosts, errors]);
 
-  const validateInput = (value, field) => {
+  const validateInput = (value: string, field: string): string => {
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue <= 0) {
       return t('inputError');
@@ -28,7 +41,7 @@ const BudgetCalculator = () => {
     return '';
   };
 
-  const handleInputChange = (value, field) => {
+  const handleInputChange = (value: string, field: string): void => {
     const error = validateInput(value, field);
     setErrors(prev => ({
       ...prev,
@@ -40,7 +53,7 @@ const BudgetCalculator = () => {
     }
   };
 
-  const handleCostChange = (id, field, value) => {
+  const handleCostChange = (id: number, field: keyof CostItem, value: string): void => {
     setMonthlyCosts(prev => 
       prev.map(cost => 
         cost.id === id ? { ...cost, [field]: value } : cost
@@ -57,7 +70,7 @@ const BudgetCalculator = () => {
     }
   };
 
-  const addCostItem = () => {
+  const addCostItem = (): void => {
     const newId = Math.max(...monthlyCosts.map(cost => cost.id)) + 1;
     setMonthlyCosts(prev => [
       ...prev,
@@ -65,7 +78,7 @@ const BudgetCalculator = () => {
     ]);
   };
 
-  const removeCostItem = (id) => {
+  const removeCostItem = (id: number): void => {
     if (monthlyCosts.length > 1) {
       setMonthlyCosts(prev => prev.filter(cost => cost.id !== id));
       // 清除相关错误
@@ -77,7 +90,7 @@ const BudgetCalculator = () => {
     }
   };
 
-  const calculateMonths = () => {
+  const calculateMonths = (): void => {
     const remaining = parseFloat(remainingAmount);
     const totalMonthly = monthlyCosts
       .filter(cost => cost.amount && !errors[`cost_${cost.id}`])
@@ -91,29 +104,29 @@ const BudgetCalculator = () => {
     }
   };
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     setRemainingAmount('');
     setMonthlyCosts([{ id: 1, name: '', amount: '', description: '' }]);
     setMonthsLeft(null);
     setErrors({});
   };
 
-  const toggleLanguage = () => {
+  const toggleLanguage = (): void => {
     const newLang = i18n.language === 'zh' ? 'en' : 'zh';
     i18n.changeLanguage(newLang);
   };
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: string): string => {
     return `${t('currency')}${parseFloat(amount).toLocaleString()}`;
   };
 
-  const getTotalMonthlyCost = () => {
+  const getTotalMonthlyCost = (): number => {
     return monthlyCosts
       .filter(cost => cost.amount && !errors[`cost_${cost.id}`])
       .reduce((sum, cost) => sum + parseFloat(cost.amount), 0);
   };
 
-  const getResultText = () => {
+  const getResultText = (): string => {
     if (monthsLeft === null) return '';
     
     if (monthsLeft === 0) {
@@ -225,7 +238,7 @@ const BudgetCalculator = () => {
             
             <div className="total-costs">
               <span className="total-label">{t('totalMonthlyCost')}:</span>
-              <span className="total-value">{formatCurrency(getTotalMonthlyCost())}</span>
+              <span className="total-value">{formatCurrency(getTotalMonthlyCost().toString())}</span>
             </div>
           </div>
 
@@ -255,7 +268,7 @@ const BudgetCalculator = () => {
                 </div>
                 <div className="summary-item">
                   <span className="label">{t('totalMonthlyExpense')}</span>
-                  <span className="value">{formatCurrency(getTotalMonthlyCost())}</span>
+                  <span className="value">{formatCurrency(getTotalMonthlyCost().toString())}</span>
                 </div>
                 <div className="summary-item">
                   <span className="label">{t('survivalTime')}</span>
@@ -292,4 +305,3 @@ const BudgetCalculator = () => {
 };
 
 export default BudgetCalculator;
-
