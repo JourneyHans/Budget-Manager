@@ -78,7 +78,7 @@ const CostBarChart: React.FC<CostBarChartProps> = ({ data, totalAmount }) => {
             <Bar 
               key={`bar-${index}`}
               dataKey="amount" 
-              fill={COLORS[index % COLORS.length]}
+              fill={entry.color}
               radius={[4, 4, 0, 0]}
               stroke="rgba(255, 255, 255, 0.2)"
               strokeWidth={1}

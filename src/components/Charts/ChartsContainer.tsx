@@ -26,6 +26,12 @@ const ChartsContainer: React.FC<ChartsContainerProps> = ({ monthlyCosts }) => {
   const { t } = useTranslation();
   const [activeChart, setActiveChart] = useState<ChartType>(ChartType.BAR);
 
+  // 预定义的颜色数组，确保颜色一致性
+  const COLORS = [
+    '#4ade80', '#60a5fa', '#f59e0b', '#ef4444', 
+    '#8b5cf6', '#06b6d4', '#f97316', '#ec4899'
+  ];
+
   // 处理图表数据
   const chartData = useMemo(() => {
     return monthlyCosts
@@ -33,7 +39,7 @@ const ChartsContainer: React.FC<ChartsContainerProps> = ({ monthlyCosts }) => {
       .map((cost, index) => ({
         name: cost.name || `${t('costItem')} ${index + 1}`,
         amount: parseFloat(cost.amount),
-        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`
+        color: COLORS[index % COLORS.length]
       }))
       .sort((a, b) => b.amount - a.amount); // 按金额降序排列
   }, [monthlyCosts, t]);
