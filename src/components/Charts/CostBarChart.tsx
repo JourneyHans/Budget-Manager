@@ -36,6 +36,7 @@ const CostBarChart: React.FC<CostBarChartProps> = ({ data, totalAmount }) => {
 
   // 自定义Y轴标签
   const CustomYAxisLabel = ({ value }: any) => {
+    if (value === undefined || value === null) return '';
     return `${t('currency')}${value.toLocaleString()}`;
   };
 
