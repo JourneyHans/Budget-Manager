@@ -17,6 +17,12 @@ interface CostBarChartProps {
 const CostBarChart: React.FC<CostBarChartProps> = ({ data, totalAmount }) => {
   const { t } = useTranslation();
 
+  // 预定义的颜色数组，与饼图保持一致
+  const COLORS = [
+    '#4ade80', '#60a5fa', '#f59e0b', '#ef4444', 
+    '#8b5cf6', '#06b6d4', '#f97316', '#ec4899'
+  ];
+
   // 自定义工具提示
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -68,13 +74,16 @@ const CostBarChart: React.FC<CostBarChartProps> = ({ data, totalAmount }) => {
             tick={{ fontSize: 12 }}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Bar 
-            dataKey="amount" 
-            fill="#4ade80"
-            radius={[4, 4, 0, 0]}
-            stroke="rgba(255, 255, 255, 0.2)"
-            strokeWidth={1}
-          />
+          {data.map((entry, index) => (
+            <Bar 
+              key={`bar-${index}`}
+              dataKey="amount" 
+              fill={COLORS[index % COLORS.length]}
+              radius={[4, 4, 0, 0]}
+              stroke="rgba(255, 255, 255, 0.2)"
+              strokeWidth={1}
+            />
+          ))}
         </BarChart>
       </ResponsiveContainer>
       

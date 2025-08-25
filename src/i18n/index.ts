@@ -50,7 +50,8 @@ const resources: TranslationResources = {
       lowestCost: '最低成本',
       costRange: '成本范围',
       noCostData: '暂无成本数据',
-      addCostsToViewCharts: '请添加成本项目以查看图表'
+      addCostsToViewCharts: '请添加成本项目以查看图表',
+      months: '个月'
     }
   },
   en: {
@@ -92,7 +93,8 @@ const resources: TranslationResources = {
       lowestCost: 'Lowest Cost',
       costRange: 'Cost Range',
       noCostData: 'No cost data available',
-      addCostsToViewCharts: 'Add cost items to view charts'
+      addCostsToViewCharts: 'Add cost items to view charts',
+      months: 'months'
     }
   }
 };

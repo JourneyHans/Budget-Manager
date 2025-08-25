@@ -271,12 +271,12 @@ const BudgetCalculator: React.FC = () => {
                   <span className="label">{t('totalMonthlyExpense')}</span>
                   <span className="value">{formatCurrency(getTotalMonthlyCost().toString())}</span>
                 </div>
-                <div className="summary-item">
-                  <span className="label">{t('survivalTime')}</span>
-                  <span className="value">
-                    {monthsLeft === 0 ? '0' : monthsLeft.toFixed(1)} 个月
-                  </span>
-                </div>
+                                        <div className="summary-item">
+                          <span className="label">{t('survivalTime')}</span>
+                          <span className="value">
+                            {monthsLeft === 0 ? '0' : monthsLeft.toFixed(1)} {t('months')}
+                          </span>
+                        </div>
               </div>
               
               <div className="costs-breakdown">
