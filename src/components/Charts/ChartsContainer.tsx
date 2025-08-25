@@ -34,8 +34,10 @@ const ChartsContainer: React.FC<ChartsContainerProps> = ({ monthlyCosts }) => {
 
   // 处理图表数据
   const chartData = useMemo(() => {
-    return monthlyCosts
-      .filter(cost => cost.amount && parseFloat(cost.amount) > 0)
+    const filteredCosts = monthlyCosts
+      .filter(cost => cost.amount && parseFloat(cost.amount) > 0);
+    
+    return filteredCosts
       .map((cost, index) => ({
         name: cost.name || `${t('costItem')} ${index + 1}`,
         amount: parseFloat(cost.amount),

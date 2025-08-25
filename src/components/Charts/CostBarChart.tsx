@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label, Cell } from 'recharts';
 import { useTranslation } from 'react-i18next';
 
 // 定义图表数据项的接口
@@ -74,16 +74,20 @@ const CostBarChart: React.FC<CostBarChartProps> = ({ data, totalAmount }) => {
             tick={{ fontSize: 12 }}
           />
           <Tooltip content={<CustomTooltip />} />
-          {data.map((entry, index) => (
-            <Bar 
-              key={`bar-${index}`}
-              dataKey="amount" 
-              fill={entry.color}
-              radius={[4, 4, 0, 0]}
-              stroke="rgba(255, 255, 255, 0.2)"
-              strokeWidth={1}
-            />
-          ))}
+          <Bar 
+            dataKey="amount" 
+            fill="#4ade80"
+            radius={[4, 4, 0, 0]}
+            stroke="rgba(255, 255, 255, 0.2)"
+            strokeWidth={1}
+          >
+            {data.map((entry, index) => (
+              <Cell 
+                key={`cell-${index}`} 
+                fill={entry.color}
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
       
