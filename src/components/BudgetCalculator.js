@@ -5,18 +5,20 @@ import './BudgetCalculator.css';
 const BudgetCalculator = () => {
   const { t, i18n } = useTranslation();
   const [remainingAmount, setRemainingAmount] = useState('');
-  const [monthlyCost, setMonthlyCost] = useState('');
+  const [monthlyCosts, setMonthlyCosts] = useState([
+    { id: 1, name: '', amount: '', description: '' }
+  ]);
   const [monthsLeft, setMonthsLeft] = useState(null);
   const [errors, setErrors] = useState({});
 
   // 实时计算
   useEffect(() => {
-    if (remainingAmount && monthlyCost && !errors.remainingAmount && !errors.monthlyCost) {
+    if (remainingAmount && monthlyCosts.some(cost => cost.amount && !errors[`cost_${cost.id}`])) {
       calculateMonths();
     } else {
       setMonthsLeft(null);
     }
-  }, [remainingAmount, monthlyCost, errors]);
+  }, [remainingAmount, monthlyCosts, errors]);
 
   const validateInput = (value, field) => {
     const numValue = parseFloat(value);
@@ -35,26 +37,63 @@ const BudgetCalculator = () => {
 
     if (field === 'remainingAmount') {
       setRemainingAmount(value);
-    } else if (field === 'monthlyCost') {
-      setMonthlyCost(value);
+    }
+  };
+
+  const handleCostChange = (id, field, value) => {
+    setMonthlyCosts(prev => 
+      prev.map(cost => 
+        cost.id === id ? { ...cost, [field]: value } : cost
+      )
+    );
+
+    // 验证金额输入
+    if (field === 'amount') {
+      const error = validateInput(value, `cost_${id}`);
+      setErrors(prev => ({
+        ...prev,
+        [`cost_${id}`]: error
+      }));
+    }
+  };
+
+  const addCostItem = () => {
+    const newId = Math.max(...monthlyCosts.map(cost => cost.id)) + 1;
+    setMonthlyCosts(prev => [
+      ...prev,
+      { id: newId, name: '', amount: '', description: '' }
+    ]);
+  };
+
+  const removeCostItem = (id) => {
+    if (monthlyCosts.length > 1) {
+      setMonthlyCosts(prev => prev.filter(cost => cost.id !== id));
+      // 清除相关错误
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[`cost_${id}`];
+        return newErrors;
+      });
     }
   };
 
   const calculateMonths = () => {
     const remaining = parseFloat(remainingAmount);
-    const monthly = parseFloat(monthlyCost);
+    const totalMonthly = monthlyCosts
+      .filter(cost => cost.amount && !errors[`cost_${cost.id}`])
+      .reduce((sum, cost) => sum + parseFloat(cost.amount), 0);
     
-    if (remaining <= monthly) {
+    if (remaining <= totalMonthly) {
       setMonthsLeft(0);
     } else {
-      const months = remaining / monthly;
+      const months = remaining / totalMonthly;
       setMonthsLeft(months);
     }
   };
 
   const handleReset = () => {
     setRemainingAmount('');
-    setMonthlyCost('');
+    setMonthlyCosts([{ id: 1, name: '', amount: '', description: '' }]);
     setMonthsLeft(null);
     setErrors({});
   };
@@ -66,6 +105,12 @@ const BudgetCalculator = () => {
 
   const formatCurrency = (amount) => {
     return `${t('currency')}${parseFloat(amount).toLocaleString()}`;
+  };
+
+  const getTotalMonthlyCost = () => {
+    return monthlyCosts
+      .filter(cost => cost.amount && !errors[`cost_${cost.id}`])
+      .reduce((sum, cost) => sum + parseFloat(cost.amount), 0);
   };
 
   const getResultText = () => {
@@ -114,19 +159,74 @@ const BudgetCalculator = () => {
             )}
           </div>
 
-          <div className="input-group">
-            <label htmlFor="monthlyCost">{t('monthlyCost')}</label>
-            <input
-              id="monthlyCost"
-              type="number"
-              value={monthlyCost}
-              onChange={(e) => handleInputChange(e.target.value, 'monthlyCost')}
-              placeholder={t('inputPlaceholder')}
-              className={errors.monthlyCost ? 'error' : ''}
-            />
-            {errors.monthlyCost && (
-              <span className="error-message">{errors.monthlyCost}</span>
-            )}
+          <div className="costs-section">
+            <div className="costs-header">
+              <h3>{t('monthlyCosts')}</h3>
+              <button 
+                className="add-cost-btn"
+                onClick={addCostItem}
+                type="button"
+              >
+                + {t('addCost')}
+              </button>
+            </div>
+            
+            {monthlyCosts.map((cost, index) => (
+              <div key={cost.id} className="cost-item">
+                <div className="cost-item-header">
+                  <span className="cost-number">{t('costItem')} {index + 1}</span>
+                  {monthlyCosts.length > 1 && (
+                    <button
+                      className="remove-cost-btn"
+                      onClick={() => removeCostItem(cost.id)}
+                      type="button"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+                
+                <div className="cost-inputs">
+                  <div className="cost-input-group">
+                    <input
+                      type="text"
+                      value={cost.name}
+                      onChange={(e) => handleCostChange(cost.id, 'name', e.target.value)}
+                      placeholder={t('costNamePlaceholder')}
+                      className="cost-name-input"
+                    />
+                  </div>
+                  
+                  <div className="cost-input-group">
+                    <input
+                      type="number"
+                      value={cost.amount}
+                      onChange={(e) => handleCostChange(cost.id, 'amount', e.target.value)}
+                      placeholder={t('inputPlaceholder')}
+                      className={`cost-amount-input ${errors[`cost_${cost.id}`] ? 'error' : ''}`}
+                    />
+                    {errors[`cost_${cost.id}`] && (
+                      <span className="error-message">{errors[`cost_${cost.id}`]}</span>
+                    )}
+                  </div>
+                  
+                  <div className="cost-input-group">
+                    <input
+                      type="text"
+                      value={cost.description}
+                      onChange={(e) => handleCostChange(cost.id, 'description', e.target.value)}
+                      placeholder={t('costDescriptionPlaceholder')}
+                      className="cost-description-input"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <div className="total-costs">
+              <span className="total-label">{t('totalMonthlyCost')}:</span>
+              <span className="total-value">{formatCurrency(getTotalMonthlyCost())}</span>
+            </div>
           </div>
 
           <div className="button-group">
@@ -154,14 +254,33 @@ const BudgetCalculator = () => {
                   <span className="value">{formatCurrency(remainingAmount)}</span>
                 </div>
                 <div className="summary-item">
-                  <span className="label">{t('monthlyExpense')}</span>
-                  <span className="value">{formatCurrency(monthlyCost)}</span>
+                  <span className="label">{t('totalMonthlyExpense')}</span>
+                  <span className="value">{formatCurrency(getTotalMonthlyCost())}</span>
                 </div>
                 <div className="summary-item">
                   <span className="label">{t('survivalTime')}</span>
                   <span className="value">
                     {monthsLeft === 0 ? '0' : monthsLeft.toFixed(1)} 个月
                   </span>
+                </div>
+              </div>
+              
+              <div className="costs-breakdown">
+                <h4>{t('costsBreakdown')}</h4>
+                <div className="costs-list">
+                  {monthlyCosts
+                    .filter(cost => cost.amount && !errors[`cost_${cost.id}`])
+                    .map((cost, index) => (
+                      <div key={cost.id} className="cost-breakdown-item">
+                        <span className="cost-name">
+                          {cost.name || `${t('costItem')} ${index + 1}`}
+                        </span>
+                        <span className="cost-amount">{formatCurrency(cost.amount)}</span>
+                        {cost.description && (
+                          <span className="cost-description">{cost.description}</span>
+                        )}
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
