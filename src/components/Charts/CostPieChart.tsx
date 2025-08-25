@@ -44,18 +44,22 @@ const CostPieChart: React.FC<CostPieChartProps> = ({ data, totalAmount }) => {
   const CustomLegend = ({ payload }: any) => {
     return (
       <div className="custom-legend">
-        {payload.map((entry: any, index: number) => (
-          <div key={`legend-${index}`} className="legend-item">
-            <div 
-              className="legend-color" 
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="legend-text">{entry.value}</span>
-            <span className="legend-amount">
-              {t('currency')}{data[index]?.amount.toLocaleString()}
-            </span>
-          </div>
-        ))}
+        {payload.map((entry: any, index: number) => {
+          // 根据图例的颜色找到对应的数据项
+          const dataItem = data.find(item => item.color === entry.color);
+          return (
+            <div key={`legend-${index}`} className="legend-item">
+              <div 
+                className="legend-color" 
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="legend-text">{entry.value}</span>
+              <span className="legend-amount">
+                {t('currency')}{dataItem?.amount.toLocaleString() || '0'}
+              </span>
+            </div>
+          );
+        })}
       </div>
     );
   };

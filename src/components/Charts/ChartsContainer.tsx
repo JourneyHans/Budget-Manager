@@ -37,13 +37,16 @@ const ChartsContainer: React.FC<ChartsContainerProps> = ({ monthlyCosts }) => {
     const filteredCosts = monthlyCosts
       .filter(cost => cost.amount && parseFloat(cost.amount) > 0);
     
-    return filteredCosts
-      .map((cost, index) => ({
-        name: cost.name || `${t('costItem')} ${index + 1}`,
-        amount: parseFloat(cost.amount),
-        color: COLORS[index % COLORS.length]
-      }))
-      .sort((a, b) => b.amount - a.amount); // 按金额降序排列
+    // 先创建带颜色的数据
+    const dataWithColors = filteredCosts.map((cost, index) => ({
+      name: cost.name || `${t('costItem')} ${index + 1}`,
+      amount: parseFloat(cost.amount),
+      color: COLORS[index % COLORS.length],
+      originalIndex: index // 保存原始索引用于颜色匹配
+    }));
+    
+    // 按金额降序排列
+    return dataWithColors.sort((a, b) => b.amount - a.amount);
   }, [monthlyCosts, t]);
 
   // 计算总金额
