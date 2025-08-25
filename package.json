@@ -2,12 +2,15 @@
   "name": "budget-manager",
   "version": "1.0.0",
   "description": "预算管理器 - 计算预算能坚持多少个月",
+  "homepage": "https://journeyhans.github.io/Budget-Manager",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "i18next": "^23.7.11",
@@ -34,6 +37,7 @@
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.7",
     "@types/recharts": "^1.8.29",
+    "gh-pages": "^6.3.0",
     "typescript": "^5.9.2"
   }
 }
