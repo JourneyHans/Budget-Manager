@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Budget-Manager/static/css/main.5fa0980b.css",
+    "main.js": "/Budget-Manager/static/js/main.fb35f416.js",
+    "index.html": "/Budget-Manager/index.html",
+    "main.5fa0980b.css.map": "/Budget-Manager/static/css/main.5fa0980b.css.map",
+    "main.fb35f416.js.map": "/Budget-Manager/static/js/main.fb35f416.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5fa0980b.css",
+    "static/js/main.fb35f416.js"
+  ]
+}
