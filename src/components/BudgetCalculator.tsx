@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './BudgetCalculator.css';
+import ChartsContainer from './Charts/ChartsContainer';
 
 // 定义成本项目的接口
 interface CostItem {
@@ -295,13 +296,16 @@ const BudgetCalculator: React.FC = () => {
                       </div>
                     ))}
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+                             </div>
+             </div>
+           </div>
+         )}
+
+         {/* 图表展示区域 */}
+         <ChartsContainer monthlyCosts={monthlyCosts} />
+       </div>
+     </div>
+   );
+ };
 
 export default BudgetCalculator;

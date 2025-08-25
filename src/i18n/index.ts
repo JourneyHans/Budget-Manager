@@ -36,7 +36,21 @@ const resources: TranslationResources = {
       totalAmount: '总金额',
       monthlyExpense: '月支出',
       survivalTime: '生存时间',
-      currency: '¥'
+      currency: '¥',
+      // 图表相关翻译
+      costCharts: '成本图表',
+      barChart: '柱状图',
+      pieChart: '饼图',
+      costDistribution: '成本分布',
+      costProportion: '成本占比',
+      totalCosts: '总成本',
+      costItems: '成本项目数',
+      averageCost: '平均成本',
+      highestCost: '最高成本',
+      lowestCost: '最低成本',
+      costRange: '成本范围',
+      noCostData: '暂无成本数据',
+      addCostsToViewCharts: '请添加成本项目以查看图表'
     }
   },
   en: {
@@ -64,7 +78,21 @@ const resources: TranslationResources = {
       totalAmount: 'Total Amount',
       monthlyExpense: 'Monthly Expense',
       survivalTime: 'Survival Time',
-      currency: '$'
+      currency: '$',
+      // 图表相关翻译
+      costCharts: 'Cost Charts',
+      barChart: 'Bar Chart',
+      pieChart: 'Pie Chart',
+      costDistribution: 'Cost Distribution',
+      costProportion: 'Cost Proportion',
+      totalCosts: 'Total Costs',
+      costItems: 'Cost Items',
+      averageCost: 'Average Cost',
+      highestCost: 'Highest Cost',
+      lowestCost: 'Lowest Cost',
+      costRange: 'Cost Range',
+      noCostData: 'No cost data available',
+      addCostsToViewCharts: 'Add cost items to view charts'
     }
   }
 };
